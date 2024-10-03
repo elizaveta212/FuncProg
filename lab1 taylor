@@ -1,0 +1,55 @@
+open System
+
+let exp x=
+    let e=2.71828
+    let mutable sum=1.0
+    let mutable curr=1.0
+    for i in 1 .. 10 do
+        curr<-curr*x/float i
+        sum<-sum+curr
+    sum
+    
+let built_in_func x=
+    let exp_value=exp(x*x)
+    (1.0+ 2.0*x*x)*exp_value
+
+let naive_taylor x eps=
+    let mutable n=0
+    let mutable curr=1.0
+    let mutable sum=curr
+    let mutable fact=1.0
+    let mutable x_pow=1.0
+    
+    while abs(curr)>=eps do
+        n<-n+ 1
+        fact<-fact*float n
+        x_pow<-x**(2.0*float n)
+        curr<-(float(2*n+ 1)/fact)*x_pow
+        sum<-sum+curr
+    (sum, n)
+
+let smart_taylor x eps=
+    let mutable n=0
+    let mutable curr=1.0
+    let mutable sum=curr
+    let x_squared=x*x
+    while abs(curr)>=eps do
+        n<-n+ 1
+        curr<-curr*(x_squared)*float(2*n+1)/float(2*n)
+    (sum, n)
+
+let main ()=
+    let eps=0.001
+    let steps=10
+    let start=0.1
+    let stop=0.6
+    let step=(stop-start)/float steps
+    printfn "%-10s %-20s %-30s %-20s" "x" "built_in" "naive" "smart"
+    for i in 0 .. steps do
+        let x=start+float i*step
+        let built_in_value=built_in_func x
+        let naive_value, naive_curr=naive_taylor x eps 
+        let smart_value, smart_curr=smart_taylor x eps
+        printfn "%-10.2f %-20.5f %-30s %-20s" x built_in_value (sprintf "%.5f, %d" naive_value naive_curr) (sprintf "%.5f, %d" smart_value smart_curr)
+
+main()
