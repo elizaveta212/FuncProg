@@ -41,8 +41,8 @@ let smart_taylor x eps=
 let main ()=
     let eps=0.001
     let steps=10
-    let start=0.1
-    let stop=0.6
+    let start=0.0
+    let stop=1.0
     let step=(stop-start)/float steps
     printfn "%-10s %-20s %-30s %-20s" "x" "built_in" "naive" "smart"
     for i in 0 .. steps do
