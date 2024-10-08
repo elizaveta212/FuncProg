@@ -1,0 +1,54 @@
+open System
+
+let eps=0.001
+
+let func1 x= 3.*Math.Sin(Math.Sqrt(x))+ 0.35*x-0.38
+let func2 x=0.25*(x**3.0)-x+ 1.2502
+let func3 x=x+Math.Sqrt(x)+(x**(1.0 / 3.0))
+
+
+let a1 = 2.
+let b1 = 3.
+let a2 = 0.
+let b2 = 2.
+let a3 = 0.4
+let b3 = 1.
+
+let func1' x=(3.0*Math.Cos(Math.Sqrt(x)))/(2.0*Math.Sqrt(x))+ 0.35
+let func2' x=0.75*x**2.0- 1.0
+let func3' x=1.0/(2.0*sqrt x)+ 1.0/(3.0*(x**(3.0/2.0)))+ 1.0
+
+let iter1 x=x-func1 x/func1' x
+let iter2 x=x-func2 x/func2' x
+let iter3 x=x-func3 x/func3' x
+
+let diff a b=
+    if a>b then a-b
+    else b-a
+let rec dichotomy func l r=
+   let m=(l+r)/2.0
+   if diff l r<eps then  
+         m
+   else if func l*func m<0.0 then 
+         dichotomy func l m
+   else 
+         dichotomy func m r
+
+let iters iter x'= 
+    let rec loop x= 
+        if diff(iter x) x<eps then 
+            iter x
+        else 
+            loop(iter x)
+    loop x'
+
+let newthon func func' x'= 
+    iters(function x->x-((func x)/(func' x)))x'
+
+let main =
+    printfn "a  b \t Iterations\t Newthon \t Dichotomy"
+    printfn "%f %f  %10.5f  %10.5f  %10.5f" a1 b1 (iters iter1 ((a1+b1)/2.0)) (newthon func1 func1' ((a1+b1)/2.0)) (dichotomy func1 a1 b1) 
+    printfn "%f %f  %10.5f  %10.5f  %10.5f" a2 b2 (iters iter2 ((a2+b2)/2.0)) (newthon func2 func2' ((a2+b2)/2.0)) (dichotomy func2 a2 b2) 
+    printfn "%f %f  %10.5f  %10.5f  %10.5f" a3 b3 (iters iter3 ((a3+b3)/2.0)) (newthon func3 func3' ((a3+b3)/2.0)) (dichotomy func3 a3 b3) 
+
+main
